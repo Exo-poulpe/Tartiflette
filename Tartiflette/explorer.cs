@@ -33,7 +33,7 @@ namespace Tartiflette
                 {
                     try
                     {
-                        dir.EnumerateFiles("*.txt", SearchOption.AllDirectories).ToList().ForEach((file) =>
+                        dir.EnumerateFiles("*.*",SearchOption.AllDirectories).Where( (f) => f.Extension == ".txt" || f.Extension == ".png" ).ToList().ForEach((file) =>
                         {
                             result.Add(file);
                             Count += 1;

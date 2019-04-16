@@ -21,14 +21,23 @@ namespace Tartiflette
             explorer brows = new explorer(path);
             Archiver arch = new Archiver("ArchiveZIP.zip");
             sw.Start();
+            // List all files 
             List<FileInfo> files = new List<FileInfo>();
             Thread T = new Thread(new ThreadStart(() => { files = brows.ListNameFile(path); }));
             T.Start();
             T.Join();
-            files.ForEach( (file) => 
+
+            // Add to archive
+            T = new Thread(new ThreadStart(() =>
             {
-                arch.AddToArchive(file);
-            });
+                files.ToList().ForEach((file) =>
+                {
+                    arch.AddToArchive(file);
+                });
+            }));
+            T.Start();
+            T.Join();
+            
             sw.Stop();
             Console.WriteLine(brows.Count);
             Console.WriteLine(sw.Elapsed);
