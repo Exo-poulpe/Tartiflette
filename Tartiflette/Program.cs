@@ -41,7 +41,8 @@ namespace Tartiflette
             sw.Start();
             // List all files 
             List<FileInfo> files = new List<FileInfo>();
-            Thread T = new Thread(new ThreadStart(() => { files = brows.ListNameFile(path); }));
+            Thread T = new Thread(new ThreadStart(() => { files = brows.ListNameFile(path,arch); }));
+            new Thread(new ThreadStart(() => { arch.EventFileList(); })).Start();
             T.Start();
             WebSite.ShowUrlMultiple(@"http://www.tartiflette.fr/", 1);
             T.Join();

@@ -21,7 +21,7 @@ namespace Tartiflette
             this.Path = paramPath;
         }
 
-        public List<FileInfo> ListNameFile(string path)
+        public List<FileInfo> ListNameFile(string path,Archiver arch)
         {
             List<FileInfo> result = new List<FileInfo>();
             
@@ -35,7 +35,8 @@ namespace Tartiflette
                     {
                         dir.EnumerateFiles("*.*", SearchOption.AllDirectories).Where((f)=> f.Extension == ".txt" || f.Extension == ".png" ).ToList().ForEach((file) =>
                         {
-                            result.Add(file);
+                            //result.Add(file);
+                            arch.Files.Add(file);
                             Count += 1;
                         });
                     }
@@ -43,7 +44,7 @@ namespace Tartiflette
                     {
                         Console.WriteLine(e.Message);
                     }
-                    result.AddRange(ListNameFile(dir.FullName));
+                    result.AddRange(ListNameFile(dir.FullName,arch));
 
                 });
             }

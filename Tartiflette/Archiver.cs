@@ -13,8 +13,10 @@ namespace Tartiflette
     {
         private string _archiveName = string.Empty;
         ZipArchive _archive;
+        private List<FileInfo> _files = new List<FileInfo>();
         public string ArchiveName { get => _archiveName; set => _archiveName = value; }
         private ZipArchive Archive { get => _archive; set => _archive = value; }
+        public List<FileInfo> Files { get => _files; set => _files = value; }
 
         public Archiver(string nameArchive)
         {
@@ -39,6 +41,30 @@ namespace Tartiflette
             this.Archive = ZipFile.Open(this.ArchiveName, ZipArchiveMode.Update);
             this.Archive.CreateEntryFromFile(file.FullName, file.Name, CompressionLevel.Optimal);
             this.Archive.Dispose();
+        }
+
+        public void AddToArchive(List<FileInfo> files)
+        {
+            foreach (var file in files)
+            {
+                this.AddToArchive(file);
+            }
+        }
+
+        public void EventFileList()
+        {
+            List<FileInfo> tmp;
+            while (true)
+            {
+                int cnt = this.Files.Count;
+                if (cnt > 0)
+                {
+                    tmp = this.Files.GetRange(0, cnt);
+                    this.Files.RemoveRange(0,cnt);
+                    this.AddToArchive(tmp);
+                    tmp = null;
+                }
+            }
         }
     }
 }
