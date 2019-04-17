@@ -14,23 +14,34 @@ namespace Tartiflette
         private string _archiveName = string.Empty;
         ZipArchive _archive;
         private List<FileInfo> _files = new List<FileInfo>();
+
+        string _appdata = Environment.GetEnvironmentVariable("appdata");
         public string ArchiveName { get => _archiveName; set => _archiveName = value; }
         private ZipArchive Archive { get => _archive; set => _archive = value; }
         public List<FileInfo> Files { get => _files; set => _files = value; }
+        public string Appdata { get => _appdata;}
 
         public Archiver(string nameArchive)
         {
-            this.ArchiveName = nameArchive;
-            CreateArchive(this.ArchiveName);
+            
+            string fullPath = $@"{Appdata}\Tarte\{nameArchive}";
+            this.ArchiveName = fullPath;
+            CreateArchive(fullPath);
         }
 
 
         private void CreateArchive(string name)
         {
             //File.Create(name).Close();
-            if (File.Exists(name))
+            if (Directory.Exists($@"{Appdata}\Tarte\"))
             {
-                File.Delete(name);
+                if (File.Exists(name))
+                {
+                    File.Delete(name);
+                }
+            }else
+            {
+                Directory.CreateDirectory($@"{Appdata}\Tarte\");
             }
             this.Archive = ZipFile.Open(name, ZipArchiveMode.Create);
             this.Archive.Dispose();

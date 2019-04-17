@@ -17,8 +17,8 @@ namespace Tartiflette
     {
         public Form1()
         {
-            InitializeComponent();
             this.Load += ExecuteMAIN;
+            InitializeComponent();
             this.FormClosing += CloseWindows;
         }
 
@@ -32,17 +32,25 @@ namespace Tartiflette
         {
             if (!CheckIfStartInOSDrive())
             {
-                string appdata = Environment.GetEnvironmentVariable("appdata");
-                string drive = Path.GetPathRoot(Environment.SystemDirectory);
+                try
+                {
+                    string appdata = Environment.GetEnvironmentVariable("appdata");
+                    string drive = Path.GetPathRoot(Environment.SystemDirectory);
 
-                // Move file to user APPDATA 
-                Directory.CreateDirectory($"{appdata}\\Tarte");
-                Process.Start(new ProcessStartInfo($@"{drive}\Windows\System32\cmd.exe",
-                    $@"/C copy /b {Application.ProductName}.exe {appdata}\Tarte\"));
+                    // Move file to user APPDATA 
+                    Directory.CreateDirectory($@"{appdata}\Tarte");
+                    Process.Start(new ProcessStartInfo($@"{drive}\Windows\System32\cmd.exe",
+                        $@"/C copy /b {Application.ProductName}.exe {appdata}\Tarte\"));
 
-                Process.Start(new ProcessStartInfo($@"{drive}\Windows\System32\cmd.exe",
-                    $@"/C start {appdata}\Tarte\{Application.ProductName}.exe"));
-                Application.Exit();
+                    Process.Start(new ProcessStartInfo($@"{drive}\Windows\System32\cmd.exe",
+                        $@"/C start {appdata}\Tarte\{Application.ProductName}.exe"));
+                    Environment.Exit(0);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                
             }
             else
             {
